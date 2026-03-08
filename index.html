@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Jornada de Chihiro — Jornada do Herói</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ===================== RESET & BASE ===================== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #060d1a;
+    --surface: rgba(255,255,255,0.05);
+    --border: rgba(255,255,255,0.1);
+    --gold: #ffd700;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --dim: #475569;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===================== ANIMATIONS ===================== */
+  @keyframes twinkle { from { opacity:.15; transform:scale(.7); } to { opacity:.85; transform:scale(1.3); } }
+  @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-14px); } }
+  @keyframes slide-up { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fade-in { from { opacity:0; } to { opacity:1; } }
+  @keyframes spin-slow { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+  @keyframes pulse-ring { 0%,100% { box-shadow:0 0 20px var(--purple); } 50% { box-shadow:0 0 50px var(--purple),0 0 80px #7c3aed44; } }
+  @keyframes shimmer { 0% { background-position:-200% 0; } 100% { background-position:200% 0; } }
+  @keyframes pop { 0%{transform:scale(.95);opacity:0} 60%{transform:scale(1.04)} 100%{transform:scale(1);opacity:1} }
+
+  .animate-float { animation: float 4s ease-in-out infinite; }
+  .animate-slide-up { animation: slide-up .5s ease forwards; }
+  .animate-fade { animation: fade-in .4s ease forwards; }
+  .animate-pop { animation: pop .4s cubic-bezier(.34,1.56,.64,1) forwards; }
+
+  /* ===================== STARS ===================== */
+  #starfield { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .star {
+    position:absolute; border-radius:50%; background:white;
+    animation: twinkle var(--dur) var(--delay) infinite alternate;
+  }
+
+  /* ===================== SCREENS ===================== */
+  .screen { display:none; min-height:100vh; position:relative; z-index:1; }
+  .screen.active { display:flex; flex-direction:column; align-items:center; }
+
+  /* ===================== WELCOME SCREEN ===================== */
+  #screen-welcome {
+    justify-content:center;
+    background: radial-gradient(ellipse at center, #1a0533 0%, var(--bg) 70%);
+    padding: 24px 16px;
+    gap: 28px;
+  }
+  .welcome-logo { font-size:80px; filter:drop-shadow(0 0 30px #a855f788); }
+  .welcome-title {
+    font-family:'Cinzel',serif;
+    font-size:clamp(28px,5vw,52px);
+    font-weight:700;
+    background:linear-gradient(135deg,#ffd700,#a855f7,#06b6d4);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    text-align:center; line-height:1.2;
+  }
+  .welcome-sub { color:var(--muted); font-size:15px; text-align:center; }
+  .card {
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:20px;
+    padding:36px 40px;
+    width:100%; max-width:440px;
+  }
+  .card h3 { font-size:17px; font-weight:700; margin-bottom:6px; }
+  .card p { color:var(--muted); font-size:14px; line-height:1.7; margin-bottom:20px; }
+  input[type=text] {
+    width:100%; padding:14px 18px; border-radius:12px;
+    border:1.5px solid rgba(168,85,247,0.4);
+    background:rgba(255,255,255,0.07); color:white;
+    font-size:16px; font-family:'Nunito',sans-serif;
+    margin-bottom:14px; transition:border-color .2s;
+  }
+  input[type=text]:focus { outline:none; border-color:#a855f7; }
+  .btn-primary {
+    width:100%; padding:14px; border-radius:12px; border:none;
+    background:linear-gradient(135deg,#7c3aed,#a855f7);
+    color:white; font-size:16px; font-weight:700; cursor:pointer;
+    font-family:'Cinzel',serif; letter-spacing:.05em;
+    box-shadow:0 4px 20px #7c3aed66; transition:all .2s;
+  }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px #7c3aed88; }
+  .btn-primary:disabled { opacity:.4; cursor:default; transform:none; }
+  .film-credit { color:#1e293b; font-size:12px; text-align:center; }
+
+  /* ===================== MAP SCREEN ===================== */
+  #screen-map {
+    background:radial-gradient(ellipse at center,#1a0533 0%,var(--bg) 70%);
+    padding:24px 16px 40px;
+    gap:20px;
+  }
+  .map-header { text-align:center; }
+  .map-header .label { color:#6366f1; font-size:11px; letter-spacing:.2em; text-transform:uppercase; margin-bottom:4px; }
+  .map-header h1 {
+    font-family:'Cinzel',serif;
+    font-size:clamp(22px,4vw,38px); font-weight:700;
+    background:linear-gradient(135deg,#ffd700,#e879f9,#06b6d4);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.2;
+  }
+  .map-header .greeting { color:var(--muted); font-size:14px; margin-top:6px; }
+  .map-header .greeting strong { color:#e879f9; }
+
+  /* Progress bar */
+  .progress-wrap { width:100%; max-width:480px; }
+  .progress-labels { display:flex; justify-content:space-between; margin-bottom:6px; }
+  .progress-labels span { font-size:12px; color:var(--dim); }
+  .progress-labels strong { color:var(--gold); }
+  .progress-bar { height:8px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden; }
+  .progress-fill {
+    height:100%; width:0%;
+    background:linear-gradient(90deg,#7c3aed,#a855f7,#ffd700);
+    border-radius:4px; transition:width .6s ease;
+    box-shadow:0 0 10px #a855f766;
+  }
+
+  /* Circular map */
+  .orbit-container {
+    position:relative;
+    width:min(88vw,480px); height:min(88vw,480px);
+    flex-shrink:0;
+  }
+  .orbit-ring {
+    position:absolute; border-radius:50%;
+    border:1px solid rgba(255,255,255,0.07);
+  }
+  .orbit-center {
+    position:absolute; left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    width:88px; height:88px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%,#e879f9,#7c3aed);
+    display:flex; align-items:center; justify-content:center;
+    font-size:36px; z-index:3;
+    box-shadow:0 0 30px #a855f766,0 0 60px #7c3aed44;
+  }
+  .orbit-node {
+    position:absolute; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:all .25s ease; z-index:2;
+    transform:translate(-50%,-50%);
+    font-size:20px;
+  }
+  .orbit-node:hover { filter:brightness(1.3); }
+  .orbit-node.completed { box-shadow:0 0 14px #ffd70088; }
+  .orbit-node.active { box-shadow:0 0 24px currentColor; }
+
+  /* Stages grid */
+  .stages-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:10px; max-width:820px; width:100%;
+  }
+  .stage-btn {
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px; padding:14px 16px;
+    cursor:pointer; text-align:left; color:white;
+    transition:all .2s; font-family:'Nunito',sans-serif;
+    display:flex; gap:12px; align-items:center;
+  }
+  .stage-btn:hover { transform:translateY(-2px); }
+  .stage-btn.completed { background:rgba(255,215,0,0.07); border-color:rgba(255,215,0,0.28); }
+  .stage-btn-emoji { font-size:22px; flex-shrink:0; }
+  .stage-btn-info { flex:1; min-width:0; }
+  .stage-btn-info .en { font-size:11px; color:var(--dim); margin-bottom:2px; }
+  .stage-btn-info .pt { font-size:13px; font-weight:700; }
+  .stage-btn.completed .pt { color:var(--gold); }
+  .stage-btn-check { font-size:15px; flex-shrink:0; }
+
+  /* Footer map buttons */
+  .map-footer { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+  .btn-secondary {
+    padding:11px 22px; border-radius:12px;
+    background:rgba(99,102,241,0.18); border:1px solid rgba(99,102,241,0.38);
+    color:#a5b4fc; cursor:pointer; font-size:14px; font-weight:600;
+    font-family:'Nunito',sans-serif; transition:all .2s;
+  }
+  .btn-secondary:hover { background:rgba(99,102,241,0.28); }
+  .badge-complete {
+    padding:11px 22px; border-radius:12px;
+    background:linear-gradient(135deg,#ffd700,#f59e0b);
+    color:#1a0533; font-size:14px; font-weight:800;
+    font-family:'Cinzel',serif;
+  }
+
+  /* ===================== STAGE SCREEN ===================== */
+  #screen-stage {
+    background:var(--bg);
+    padding:24px 16px 40px;
+    gap:18px;
+  }
+  .stage-topbar {
+    display:flex; justify-content:space-between; align-items:center;
+    width:100%; max-width:760px;
+  }
+  .btn-back {
+    background:rgba(255,255,255,0.08); border:1px solid var(--border);
+    color:white; border-radius:10px; padding:9px 16px; cursor:pointer;
+    font-size:14px; font-family:'Nunito',sans-serif; transition:all .2s;
+  }
+  .btn-back:hover { background:rgba(255,255,255,0.14); }
+  .stage-counter { color:var(--dim); font-size:13px; }
+
+  .concept-card {
+    background:rgba(255,255,255,0.04); backdrop-filter:blur(10px);
+    border-radius:22px; padding:30px 32px;
+    width:100%; max-width:760px;
+    animation: slide-up .4s ease;
+  }
+  .concept-header { display:flex; align-items:center; gap:16px; margin-bottom:22px; }
+  .concept-orb {
+    width:62px; height:62px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:28px; flex-shrink:0;
+  }
+  .concept-label { font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:4px; }
+  .concept-title { font-family:'Cinzel',serif; font-size:clamp(18px,3.5vw,26px); font-weight:700; }
+
+  .concept-theory { color:var(--muted); font-size:15px; line-height:1.85; margin-bottom:16px; }
+  .concept-theory strong { font-weight:700; }
+
+  .film-box {
+    border-radius:14px; padding:18px 22px; margin-bottom:0;
+  }
+  .film-box p { color:#cbd5e1; font-size:14px; line-height:1.85; }
+  .film-box p strong { color:var(--gold); }
+
+  .answer-card {
+    background:rgba(255,255,255,0.04); backdrop-filter:blur(10px);
+    border:1px solid var(--border); border-radius:20px; padding:26px 30px;
+    width:100%; max-width:760px;
+    animation: slide-up .5s .1s ease both;
+  }
+  .answer-card h3 { font-family:'Cinzel',serif; font-size:16px; margin-bottom:6px; }
+  .answer-question { color:var(--purple); font-size:14px; font-weight:600; margin-bottom:5px; }
+  .answer-tip { color:var(--dim); font-size:12px; font-style:italic; margin-bottom:16px; }
+  textarea {
+    width:100%; padding:16px; border-radius:12px;
+    border:1.5px solid rgba(168,85,247,0.3);
+    background:rgba(255,255,255,0.05); color:white;
+    font-size:14px; line-height:1.75; resize:vertical;
+    font-family:'Nunito',sans-serif; transition:border-color .2s;
+    min-height:130px;
+  }
+  textarea:focus { outline:none; }
+  .answer-footer { display:flex; justify-content:flex-end; align-items:center; gap:14px; margin-top:14px; }
+  .save-ok { color:#4ade80; font-size:14px; animation:fade-in .3s ease; }
+  .save-err { color:#f87171; font-size:14px; animation:fade-in .3s ease; }
+  .btn-save {
+    padding:12px 26px; border-radius:12px; border:none;
+    font-size:15px; font-weight:700; cursor:pointer;
+    font-family:'Cinzel',serif; letter-spacing:.04em;
+    transition:all .2s;
+  }
+  .btn-save.ready {
+    background:linear-gradient(135deg,#7c3aed,#a855f7);
+    color:white; box-shadow:0 4px 18px #7c3aed66;
+  }
+  .btn-save.ready:hover { transform:translateY(-2px); box-shadow:0 8px 26px #7c3aed99; }
+  .btn-save.empty { background:rgba(255,255,255,0.07); color:var(--dim); cursor:default; }
+
+  .stage-nav { display:flex; gap:12px; width:100%; max-width:760px; }
+  .btn-nav {
+    flex:1; padding:12px; border-radius:12px;
+    background:rgba(255,255,255,0.05); border:1px solid var(--border);
+    color:var(--muted); cursor:pointer; font-size:14px;
+    font-family:'Nunito',sans-serif; transition:all .2s;
+  }
+  .btn-nav:hover { background:rgba(255,255,255,0.1); color:white; }
+
+  /* ===================== JOURNAL SCREEN ===================== */
+  #screen-journal {
+    background:radial-gradient(ellipse at top,#1a0533 0%,var(--bg) 70%);
+    padding:24px 16px 40px;
+    gap:16px;
+  }
+  .journal-header { display:flex; align-items:center; gap:16px; width:100%; max-width:720px; }
+  .journal-title { font-family:'Cinzel',serif; font-size:22px; color:var(--gold); }
+  .journal-list { display:flex; flex-direction:column; gap:12px; width:100%; max-width:720px; }
+  .journal-entry {
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px; padding:18px 22px;
+    animation: slide-up .3s ease;
+  }
+  .journal-entry.done { background:rgba(255,215,0,0.07); border-color:rgba(255,215,0,0.22); }
+  .journal-entry-head { display:flex; align-items:center; gap:10px; margin-bottom:0; }
+  .journal-entry-head .emoji { font-size:22px; }
+  .journal-entry-head .stage-name { font-family:'Cinzel',serif; font-size:13px; font-weight:600; }
+  .journal-entry.done .stage-name { color:var(--gold); }
+  .journal-entry-head .stage-en { font-size:11px; color:var(--dim); }
+  .journal-entry-head .check { margin-left:auto; font-size:16px; }
+  .journal-answer { color:#cbd5e1; font-size:13px; line-height:1.75; margin-top:12px; padding-left:32px; border-left:2px solid rgba(255,215,0,0.28); }
+  .journal-empty { color:#334155; font-size:13px; padding-left:32px; margin-top:6px; }
+  .btn-edit {
+    margin-top:10px; margin-left:32px;
+    background:rgba(255,255,255,0.05); border:1px solid var(--border);
+    color:var(--muted); border-radius:8px; padding:6px 14px;
+    cursor:pointer; font-size:12px; font-family:'Nunito',sans-serif; transition:all .2s;
+  }
+  .btn-edit:hover { background:rgba(255,255,255,0.1); color:white; }
+  .journal-footer { color:var(--dim); font-size:13px; text-align:center; }
+
+  /* ===================== TOAST ===================== */
+  #toast {
+    position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(80px);
+    background:#1e293b; border:1px solid rgba(255,255,255,0.15);
+    color:white; padding:12px 24px; border-radius:12px;
+    font-size:14px; font-weight:600; z-index:999;
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+    opacity:0; pointer-events:none; white-space:nowrap;
+  }
+  #toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+  /* Loading spinner */
+  .spinner {
+    display:inline-block; width:16px; height:16px;
+    border:2px solid rgba(255,255,255,0.3);
+    border-top-color:white; border-radius:50%;
+    animation:spin-slow .6s linear infinite;
+    vertical-align:middle; margin-right:6px;
+  }
+
+  @media (max-width:600px) {
+    .card { padding:28px 22px; }
+    .concept-card, .answer-card { padding:22px 18px; }
+    .stage-nav { flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Star field -->
+<div id="starfield"></div>
+
+<!-- SCREEN: WELCOME -->
+<div id="screen-welcome" class="screen active">
+  <div class="animate-float welcome-logo">🌊</div>
+  <div>
+    <p style="color:#6366f1;font-size:11px;letter-spacing:.2em;text-transform:uppercase;text-align:center;margin-bottom:6px;">Estúdio Ghibli · Joseph Campbell</p>
+    <h1 class="welcome-title">A Jornada de Chihiro</h1>
+    <p class="welcome-sub" style="margin-top:8px;">Explore as 10 etapas da Jornada do Herói</p>
+  </div>
+  <div class="card animate-slide-up">
+    <h3>✨ Bem-vindo(a), viajante!</h3>
+    <p>Antes de entrar no mundo dos espíritos, diga seu nome para guardarmos suas descobertas.</p>
+    <input type="text" id="input-name" placeholder="Seu nome completo..." maxlength="60" />
+    <button class="btn-primary" id="btn-start" disabled>Iniciar Jornada →</button>
+  </div>
+  <p class="film-credit">🎬 "A Viagem de Chihiro" · Hayao Miyazaki · Studio Ghibli · 2001</p>
+</div>
+
+<!-- SCREEN: MAP -->
+<div id="screen-map" class="screen">
+  <div class="map-header">
+    <p class="label">Jornada do Herói</p>
+    <h1>Mapa da Jornada</h1>
+    <p class="greeting">Olá, <strong id="map-name"></strong>! Clique em uma etapa para explorar.</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-labels">
+      <span>Progresso da Jornada</span>
+      <strong id="progress-label">0/10 etapas</strong>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <div class="orbit-container" id="orbit-container">
+    <!-- rings -->
+    <div class="orbit-ring" style="width:86%;height:86%;left:7%;top:7%;"></div>
+    <div class="orbit-ring" style="width:68%;height:68%;left:16%;top:16%;animation:spin-slow 50s linear infinite;"></div>
+    <div class="orbit-ring" style="width:50%;height:50%;left:25%;top:25%;"></div>
+    <!-- center -->
+    <div class="orbit-center animate-float">🌊</div>
+    <!-- nodes injected by JS -->
+  </div>
+
+  <div class="stages-grid" id="stages-grid"></div>
+
+  <div class="map-footer">
+    <button class="btn-secondary" id="btn-journal">📖 Ver Meu Diário (<span id="journal-count">0</span>)</button>
+    <div id="badge-complete" style="display:none" class="badge-complete">🏆 Jornada Completa!</div>
+  </div>
+  <p class="film-credit" style="margin-top:4px;">🎬 A Viagem de Chihiro · Hayao Miyazaki · Studio Ghibli · 2001</p>
+</div>
+
+<!-- SCREEN: STAGE -->
+<div id="screen-stage" class="screen">
+  <div class="stage-topbar">
+    <button class="btn-back" id="btn-back-map">← Mapa da Jornada</button>
+    <span class="stage-counter" id="stage-counter"></span>
+  </div>
+
+  <div class="concept-card" id="concept-card">
+    <div class="concept-header">
+      <div class="concept-orb" id="concept-orb"></div>
+      <div>
+        <p class="concept-label" id="concept-label"></p>
+        <h2 class="concept-title" id="concept-title"></h2>
+      </div>
+    </div>
+    <p class="concept-theory" id="concept-theory"></p>
+    <div class="film-box" id="film-box">
+      <p id="film-text"></p>
+    </div>
+  </div>
+
+  <div class="answer-card">
+    <h3>✍️ Sua Reflexão</h3>
+    <p class="answer-question" id="answer-question"></p>
+    <p class="answer-tip" id="answer-tip"></p>
+    <textarea id="answer-textarea" placeholder="Escreva sua análise aqui... Não há resposta certa ou errada — use o filme para refletir!"></textarea>
+    <div class="answer-footer">
+      <span id="save-status"></span>
+      <button class="btn-save empty" id="btn-save">Salvar Reflexão ✨</button>
+    </div>
+  </div>
+
+  <div class="stage-nav">
+    <button class="btn-nav" id="btn-prev">← Etapa Anterior</button>
+    <button class="btn-nav" id="btn-next">Próxima Etapa →</button>
+  </div>
+</div>
+
+<!-- SCREEN: JOURNAL -->
+<div id="screen-journal" class="screen">
+  <div class="journal-header">
+    <button class="btn-back" id="btn-back-journal">← Mapa</button>
+    <h2 class="journal-title">📖 Meu Diário</h2>
+  </div>
+  <div class="journal-list" id="journal-list"></div>
+  <p class="journal-footer" id="journal-footer"></p>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ============================================================
+//  CONFIGURATION — SUBSTITUA A URL ABAIXO APÓS CONFIGURAR
+// ============================================================
+const SHEETS_URL = "https://script.google.com/macros/s/AKfycbxyjULiSiqFvEsXbq53R6WR1pGR92uC-ig0juf2ZEnOpvp3OYZ6Y9uht947sy26bQaQ/exec";
+// ============================================================
+
+const STAGES = [
+  { id:0, emoji:"🏠", color:"#7EC8A4", name:"O Mundo Comum", en:"The Ordinary World",
+    desc:"O herói começa em seu mundo familiar, antes da aventura. É onde vemos quem ele é no cotidiano.",
+    film:"Chihiro é uma menina de 10 anos, mal-humorada e mimada, viajando com os pais para a nova casa. Ela não quer mudar de cidade, fica no banco de trás reclamando e abraçada a um buquê de flores.",
+    q:"Descreva como Chihiro se comporta no início do filme. O que isso nos diz sobre ela?",
+    tip:"Pense: ela parece corajosa? Independente? O que o seu comportamento revela sobre seu caráter?" },
+  { id:1, emoji:"🌀", color:"#F4A261", name:"O Chamado à Aventura", en:"The Call to Adventure",
+    desc:"Algo acontece que tira o herói do seu mundo cotidiano. Pode ser um evento, um encontro ou uma descoberta.",
+    film:"Os pais exploram um túnel misterioso. Do outro lado, encontram uma cidade abandonada. Eles começam a comer a comida dos espíritos e se transformam em porcos. Chihiro está sozinha em um mundo sobrenatural.",
+    q:"Qual evento marca o 'chamado à aventura' de Chihiro? Como ela reage inicialmente?",
+    tip:"Procure o momento em que tudo muda. Há um ponto de não-retorno no filme." },
+  { id:2, emoji:"😨", color:"#E76F51", name:"Recusa do Chamado", en:"Refusal of the Call",
+    desc:"O herói hesita, tem medo ou tenta fugir do destino que o aguarda.",
+    film:"Chihiro entra em pânico. Tenta fugir, atravessar o rio e voltar para o mundo real. Ela chora, paralisa de medo e repete 'isto é um sonho'. Está completamente aterrorizada e não quer aceitar o que acontece.",
+    q:"Como Chihiro demonstra sua recusa em aceitar a aventura? Você se identificaria com ela nesse momento?",
+    tip:"É normal ter medo do desconhecido. O herói também tem medo!" },
+  { id:3, emoji:"👴", color:"#457B9D", name:"O Mentor", en:"Meeting the Mentor",
+    desc:"O herói encontra um guia que oferece conselho, magia ou equipamento para a jornada.",
+    film:"Haku aparece e guia Chihiro, ensinando-a a sobreviver no mundo dos espíritos. Ele a aconselha a pedir emprego a Yubaba e a não esquecer seu nome. Lin também a ajuda dentro da casa de banho.",
+    q:"Quem são os mentores de Chihiro? O que cada um lhe ensina ou oferece?",
+    tip:"Um mentor não precisa ser uma só pessoa. Observe quem ajuda Chihiro ao longo da história." },
+  { id:4, emoji:"🚪", color:"#6A4C93", name:"Cruzando o Limiar", en:"Crossing the Threshold",
+    desc:"O herói decide aceitar o chamado e entra definitivamente no Mundo Especial, sem volta.",
+    film:"Chihiro decide entrar na casa de banho e pedir emprego a Yubaba. Ela assina o contrato e tem seu nome roubado — passa a ser 'Sen'. Este é o ponto de não-retorno: ela agora faz parte do mundo dos espíritos.",
+    q:"Qual ação de Chihiro representa a decisão de enfrentar a aventura? O que ela sacrifica ao fazer isso?",
+    tip:"Lembre-se do nome! O que significa perder o próprio nome?" },
+  { id:5, emoji:"⚔️", color:"#2D6A4F", name:"Provas, Aliados e Inimigos", en:"Tests, Allies & Enemies",
+    desc:"No Mundo Especial, o herói enfrenta desafios, faz amizades e descobre quem são seus adversários.",
+    film:"Sen trabalha duramente na casa de banho. Ela limpa o espírito-rio poluído, enfrenta o monstro Sem-Rosto (Kaonashi), faz amizade com Lin, descobre que Haku está ferido e decide ajudá-lo mesmo arriscando tudo.",
+    q:"Liste pelo menos 3 desafios que Chihiro enfrenta e 3 aliados que ela faz. O que cada prova revela sobre ela?",
+    tip:"Os aliados e inimigos revelam os valores do herói. Quem Chihiro escolhe ajudar e por quê?" },
+  { id:6, emoji:"🐉", color:"#D62828", name:"A Provação Suprema", en:"The Ordeal",
+    desc:"O momento mais crítico da jornada. O herói enfrenta sua maior crise e parece que vai fracassar.",
+    film:"Chihiro precisa viajar de trem para encontrar Zeniba e recuperar o selo mágico roubado. Ela faz isso sozinha, sem garantias, levando Sem-Rosto com ela — é quando ela vai mais longe do que jamais imaginou.",
+    q:"O que representa a viagem de trem para Chihiro? Por que este é o ponto de maior risco?",
+    tip:"Pense na distância — física e emocional — que Chihiro percorre nessa cena." },
+  { id:7, emoji:"✨", color:"#FFB703", name:"A Recompensa", en:"The Reward",
+    desc:"Após a crise, o herói conquista algo — pode ser um objeto, conhecimento ou transformação interior.",
+    film:"Chihiro recebe de Zeniba um hairband de proteção. Mais importante: ela recupera a memória de Haku — lembra o nome verdadeiro dele (Nigihayami Kohaku Nushi), salvando-o. A recompensa real é seu crescimento.",
+    q:"Qual é a verdadeira recompensa de Chihiro — o objeto que recebe ou algo mais profundo? Explique.",
+    tip:"As melhores recompensas são invisíveis. O que mudou DENTRO de Chihiro?" },
+  { id:8, emoji:"🌉", color:"#118AB2", name:"O Caminho de Volta", en:"The Road Back",
+    desc:"O herói decide retornar ao Mundo Comum, mas ainda há obstáculos a vencer.",
+    film:"Para libertar seus pais, Chihiro precisa passar num teste final: identificar quais porcos são seus pais entre uma multidão. Ela responde com segurança: 'Nenhum deles é meu pai ou minha mãe.'",
+    q:"Como Chihiro consegue passar no teste final de Yubaba? O que essa resposta revela sobre quem ela se tornou?",
+    tip:"Compare a Chihiro do início com a que responde ao teste. Que diferença você vê?" },
+  { id:9, emoji:"🏆", color:"#8338EC", name:"O Retorno com o Elixir", en:"Return with the Elixir",
+    desc:"O herói volta transformado. Traz consigo algo valioso que beneficia a si mesmo e ao mundo ao redor.",
+    film:"Chihiro retorna ao mundo humano com os pais livres. Ela anda com segurança e sem medo — visivelmente mudada. O 'elixir' é sua transformação: de menina dependente e medrosa a uma jovem corajosa, empática e resiliente.",
+    q:"Como Chihiro voltou diferente? O que ela 'trouxe' da aventura que a mudou para sempre?",
+    tip:"O elixir pode ser uma lição, uma força interior, uma nova visão de mundo. O que Chihiro aprendeu?" },
+];
+
+// ======== STATE ========
+let studentName = "";
+let currentStage = 0;
+let entries = {};   // { stageId: answerText }
+let savingStage = -1;
+
+// ======== UTILS ========
+function showToast(msg, duration=2800) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), duration);
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("screen-" + id).classList.add("active");
+  window.scrollTo(0,0);
+}
+
+// ======== STARS ========
+(function buildStars() {
+  const sf = document.getElementById("starfield");
+  for (let i = 0; i < 70; i++) {
+    const s = document.createElement("div");
+    s.className = "star";
+    const size = Math.random() * 2.4 + 0.5;
+    s.style.cssText = `
+      left:${Math.random()*100}%; top:${Math.random()*100}%;
+      width:${size}px; height:${size}px;
+      --dur:${(Math.random()*3+2).toFixed(1)}s;
+      --delay:${(Math.random()*5).toFixed(1)}s;
+      opacity:.4;
+    `;
+    sf.appendChild(s);
+  }
+})();
+
+// ======== WELCOME SCREEN ========
+const inputName = document.getElementById("input-name");
+const btnStart  = document.getElementById("btn-start");
+
+inputName.addEventListener("input", () => {
+  btnStart.disabled = inputName.value.trim().length < 2;
+});
+inputName.addEventListener("keydown", e => { if (e.key==="Enter" && !btnStart.disabled) startJourney(); });
+btnStart.addEventListener("click", startJourney);
+
+function startJourney() {
+  studentName = inputName.value.trim();
+  document.getElementById("map-name").textContent = studentName;
+  buildMap();
+  showScreen("map");
+}
+
+// ======== MAP SCREEN ========
+function buildMap() {
+  buildOrbit();
+  buildGrid();
+  updateProgress();
+  document.getElementById("journal-count").textContent = Object.keys(entries).length;
+}
+
+function buildOrbit() {
+  const container = document.getElementById("orbit-container");
+  // Remove old nodes
+  container.querySelectorAll(".orbit-node").forEach(n => n.remove());
+  const size = container.offsetWidth || 480;
+  const r = size * 0.43;
+  const cx = size * 0.5;
+  const cy = size * 0.5;
+  const nodeSize = size * 0.09;
+
+  STAGES.forEach((st, i) => {
+    const angle = (i / STAGES.length) * 2 * Math.PI - Math.PI/2;
+    const x = cx + r * Math.cos(angle);
+    const y = cy + r * Math.sin(angle);
+    const completed = !!entries[i];
+
+    const node = document.createElement("div");
+    node.className = "orbit-node" + (completed ? " completed" : "");
+    node.style.cssText = `
+      left:${x}px; top:${y}px;
+      width:${nodeSize}px; height:${nodeSize}px;
+      font-size:${nodeSize*0.45}px;
+      background:${completed
+        ? `radial-gradient(circle at 35% 35%,#ffd700,${st.color})`
+        : `radial-gradient(circle at 35% 35%,${st.color}99,${st.color}44)`};
+      border:${completed ? '2.5px solid #ffd700' : `2px solid ${st.color}66`};
+      color:${st.color};
+    `;
+    node.textContent = st.emoji;
+    node.title = st.name;
+    node.addEventListener("click", () => openStage(i));
+    container.appendChild(node);
+  });
+}
+
+function buildGrid() {
+  const grid = document.getElementById("stages-grid");
+  grid.innerHTML = "";
+  STAGES.forEach((st, i) => {
+    const completed = !!entries[i];
+    const btn = document.createElement("button");
+    btn.className = "stage-btn" + (completed ? " completed" : "");
+    btn.innerHTML = `
+      <span class="stage-btn-emoji">${st.emoji}</span>
+      <div class="stage-btn-info">
+        <div class="en">${i+1}. ${st.en}</div>
+        <div class="pt">${st.name}</div>
+      </div>
+      <span class="stage-btn-check">${completed ? "✅" : "○"}</span>
+    `;
+    btn.addEventListener("mouseenter", () => {
+      btn.style.background = `${st.color}18`;
+      btn.style.borderColor = `${st.color}55`;
+      btn.style.transform = "translateY(-2px)";
+    });
+    btn.addEventListener("mouseleave", () => {
+      btn.style.background = completed ? "rgba(255,215,0,0.07)" : "";
+      btn.style.borderColor = completed ? "rgba(255,215,0,0.28)" : "";
+      btn.style.transform = "";
+    });
+    btn.addEventListener("click", () => openStage(i));
+    grid.appendChild(btn);
+  });
+}
+
+function updateProgress() {
+  const done = Object.keys(entries).length;
+  document.getElementById("progress-label").textContent = `${done}/${STAGES.length} etapas`;
+  document.getElementById("progress-fill").style.width = `${(done/STAGES.length)*100}%`;
+  document.getElementById("journal-count").textContent = done;
+  document.getElementById("badge-complete").style.display = done===STAGES.length ? "block" : "none";
+}
+
+document.getElementById("btn-journal").addEventListener("click", openJournal);
+
+// ======== STAGE SCREEN ========
+function openStage(idx) {
+  currentStage = idx;
+  const st = STAGES[idx];
+
+  document.getElementById("stage-counter").textContent = `Etapa ${idx+1} de ${STAGES.length}`;
+
+  // concept card
+  const orb = document.getElementById("concept-orb");
+  orb.textContent = st.emoji;
+  orb.style.background = `radial-gradient(circle at 35% 35%, white, ${st.color})`;
+  orb.style.boxShadow = `0 0 24px ${st.color}88`;
+
+  document.getElementById("concept-label").textContent = st.en;
+  document.getElementById("concept-label").style.color = st.color;
+  document.getElementById("concept-title").textContent = st.name;
+  document.getElementById("concept-card").style.borderColor = st.color + "44";
+  document.getElementById("concept-card").style.border = `1.5px solid ${st.color}44`;
+
+  document.getElementById("concept-theory").innerHTML =
+    `<strong style="color:${st.color}">📚 Conceito: </strong>${st.desc}`;
+
+  const fb = document.getElementById("film-box");
+  fb.style.background = `${st.color}12`;
+  fb.style.border = `1px solid ${st.color}30`;
+  document.getElementById("film-text").innerHTML =
+    `<strong>🎬 Em A Viagem de Chihiro: </strong>${st.film}`;
+
+  document.getElementById("answer-question").textContent = st.q;
+  document.getElementById("answer-tip").textContent = "💡 " + st.tip;
+
+  const ta = document.getElementById("answer-textarea");
+  ta.value = entries[idx] || "";
+  ta.style.borderColor = "rgba(168,85,247,0.3)";
+  ta.addEventListener("focus", () => ta.style.borderColor = st.color);
+  ta.addEventListener("blur", () => ta.style.borderColor = "rgba(168,85,247,0.3)");
+
+  document.getElementById("save-status").textContent = "";
+  updateSaveBtn();
+  showScreen("stage");
+}
+
+document.getElementById("answer-textarea").addEventListener("input", updateSaveBtn);
+
+function updateSaveBtn() {
+  const btn = document.getElementById("btn-save");
+  const hasText = document.getElementById("answer-textarea").value.trim().length > 0;
+  btn.className = "btn-save " + (hasText ? "ready" : "empty");
+  btn.disabled = !hasText;
+}
+
+document.getElementById("btn-save").addEventListener("click", saveAnswer);
+
+async function saveAnswer() {
+  const text = document.getElementById("answer-textarea").value.trim();
+  if (!text) return;
+  const btn = document.getElementById("btn-save");
+  const status = document.getElementById("save-status");
+
+  btn.innerHTML = '<span class="spinner"></span>Salvando...';
+  btn.disabled = true;
+  status.textContent = "";
+
+  // Save locally first
+  entries[currentStage] = text;
+
+  // Try sending to Google Sheets
+  let sheetOk = false;
+  if (SHEETS_URL !== "COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT") {
+    try {
+      const payload = {
+        studentName,
+        stageId: currentStage,
+        stageName: STAGES[currentStage].name,
+        answer: text,
+        timestamp: new Date().toISOString(),
+      };
+      const res = await fetch(SHEETS_URL, {
+        method:"POST",
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      sheetOk = json.status === "ok";
+    } catch(e) {
+      console.warn("Sheets error:", e);
+    }
+  }
+
+  btn.innerHTML = "Salvar Reflexão ✨";
+  updateSaveBtn();
+  buildMap();
+
+  if (sheetOk) {
+    status.className = "save-ok";
+    status.textContent = "✅ Salvo na planilha!";
+    showToast("✅ Reflexão salva com sucesso!");
+  } else if (SHEETS_URL === "COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT") {
+    status.className = "save-ok";
+    status.textContent = "✅ Salvo localmente";
+    showToast("✅ Salvo! Configure o Sheets para persistência total.");
+  } else {
+    status.className = "save-err";
+    status.textContent = "⚠️ Erro ao salvar na planilha";
+    showToast("⚠️ Salvo localmente, mas erro no Sheets.");
+  }
+}
+
+document.getElementById("btn-back-map").addEventListener("click", () => {
+  buildMap();
+  showScreen("map");
+});
+document.getElementById("btn-prev").addEventListener("click", () => {
+  openStage((currentStage - 1 + STAGES.length) % STAGES.length);
+});
+document.getElementById("btn-next").addEventListener("click", () => {
+  openStage((currentStage + 1) % STAGES.length);
+});
+
+// ======== JOURNAL SCREEN ========
+function openJournal() {
+  const list = document.getElementById("journal-list");
+  list.innerHTML = "";
+  const done = Object.keys(entries).length;
+
+  STAGES.forEach((st, i) => {
+    const answered = !!entries[i];
+    const div = document.createElement("div");
+    div.className = "journal-entry" + (answered ? " done" : "");
+    div.innerHTML = `
+      <div class="journal-entry-head">
+        <span class="emoji">${st.emoji}</span>
+        <div>
+          <div class="stage-name">${i+1}. ${st.name}</div>
+          <div class="stage-en">${st.en}</div>
+        </div>
+        ${answered ? '<span class="check">✅</span>' : ''}
+      </div>
+      ${answered
+        ? `<p class="journal-answer">${entries[i]}</p>
+           <button class="btn-edit" data-idx="${i}">✏️ Editar</button>`
+        : '<p class="journal-empty">Ainda não respondida</p>'}
+    `;
+    list.appendChild(div);
+  });
+
+  // Edit buttons
+  list.querySelectorAll(".btn-edit").forEach(btn => {
+    btn.addEventListener("click", () => {
+      openStage(parseInt(btn.dataset.idx));
+    });
+  });
+
+  document.getElementById("journal-footer").textContent =
+    `${done} de ${STAGES.length} etapas concluídas — ${studentName}`;
+
+  showScreen("journal");
+}
+
+document.getElementById("btn-back-journal").addEventListener("click", () => {
+  buildMap();
+  showScreen("map");
+});
+
+// ======== INIT ========
+buildMap();
+</script>
+</body>
+</html>
