@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A Jornada de Chihiro — Jornada do Herói</title>
+<title>Kubo e as Duas Cordas Mágicas — Jornada do Herói</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -352,19 +352,19 @@
 
 <!-- SCREEN: WELCOME -->
 <div id="screen-welcome" class="screen active">
-  <div class="animate-float welcome-logo">🌊</div>
+  <div class="animate-float welcome-logo">🎏</div>
   <div>
-    <p style="color:#6366f1;font-size:11px;letter-spacing:.2em;text-transform:uppercase;text-align:center;margin-bottom:6px;">Estúdio Ghibli · Joseph Campbell</p>
-    <h1 class="welcome-title">A Jornada de Chihiro</h1>
-    <p class="welcome-sub" style="margin-top:8px;">Explore as 10 etapas da Jornada do Herói</p>
+    <p style="color:#6366f1;font-size:11px;letter-spacing:.2em;text-transform:uppercase;text-align:center;margin-bottom:6px;">Laika Studios · Joseph Campbell</p>
+    <h1 class="welcome-title">Kubo e as Duas Cordas Mágicas</h1>
+    <p class="welcome-sub" style="margin-top:8px;">Explore as 12 etapas da Jornada do Herói</p>
   </div>
   <div class="card animate-slide-up">
-    <h3>✨ Bem-vindo(a), viajante!</h3>
-    <p>Antes de entrar no mundo dos espíritos, diga seu nome para guardarmos suas descobertas.</p>
+    <h3>✨ Bem-vindo(a), contador(a) de histórias!</h3>
+    <p>Antes de partir em busca da armadura lendária, diga seu nome para guardarmos suas descobertas.</p>
     <input type="text" id="input-name" placeholder="Seu nome completo..." maxlength="60" />
     <button class="btn-primary" id="btn-start" disabled>Iniciar Jornada →</button>
   </div>
-  <p class="film-credit">🎬 "A Viagem de Chihiro" · Hayao Miyazaki · Studio Ghibli · 2001</p>
+  <p class="film-credit">🎬 "Kubo e as Duas Cordas Mágicas" · Travis Knight · Laika Studios · 2016</p>
 </div>
 
 <!-- SCREEN: MAP -->
@@ -378,7 +378,7 @@
   <div class="progress-wrap">
     <div class="progress-labels">
       <span>Progresso da Jornada</span>
-      <strong id="progress-label">0/10 etapas</strong>
+      <strong id="progress-label">0/12 etapas</strong>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
   </div>
@@ -389,7 +389,7 @@
     <div class="orbit-ring" style="width:68%;height:68%;left:16%;top:16%;animation:spin-slow 50s linear infinite;"></div>
     <div class="orbit-ring" style="width:50%;height:50%;left:25%;top:25%;"></div>
     <!-- center -->
-    <div class="orbit-center animate-float">🌊</div>
+    <div class="orbit-center animate-float">🎏</div>
     <!-- nodes injected by JS -->
   </div>
 
@@ -399,7 +399,7 @@
     <button class="btn-secondary" id="btn-journal">📖 Ver Meu Diário (<span id="journal-count">0</span>)</button>
     <div id="badge-complete" style="display:none" class="badge-complete">🏆 Jornada Completa!</div>
   </div>
-  <p class="film-credit" style="margin-top:4px;">🎬 A Viagem de Chihiro · Hayao Miyazaki · Studio Ghibli · 2001</p>
+  <p class="film-credit" style="margin-top:4px;">🎬 Kubo e as Duas Cordas Mágicas · Travis Knight · Laika Studios · 2016</p>
 </div>
 
 <!-- SCREEN: STAGE -->
@@ -463,60 +463,70 @@ const SHEETS_URL = "https://script.google.com/macros/s/AKfycbxyjULiSiqFvEsXbq53R
 const STAGES = [
   { id:0, emoji:"🏠", color:"#7EC8A4", name:"O Mundo Comum", en:"The Ordinary World",
     desc:"O herói começa em seu mundo familiar, antes da aventura. É onde vemos quem ele é no cotidiano.",
-    film:"Chihiro é uma menina de 10 anos, mal-humorada e mimada, viajando com os pais para a nova casa. Ela não quer mudar de cidade, fica no banco de trás reclamando e abraçada a um buquê de flores.",
-    q:"Descreva como Chihiro se comporta no início do filme. O que isso nos diz sobre ela?",
-    tip:"Pense: ela parece corajosa? Independente? O que o seu comportamento revela sobre seu caráter?" },
+    film:"Kubo vive numa caverna com a mãe, que está doente e só recupera a consciência à noite. De dia, ele desce à vila e conta histórias animando origami com sua shamisen mágica para ganhar dinheiro. Ele é criativo e amado pelos aldeões, mas carrega um segredo: jamais pode ficar fora após o pôr do sol.",
+    q:"Descreva como Kubo vive no início do filme. O que essa rotina revela sobre sua personalidade e seu mundo?",
+    tip:"Pense: quais são os limites da vida de Kubo? O que ele tem de especial e o que lhe falta?" },
   { id:1, emoji:"🌀", color:"#F4A261", name:"O Chamado à Aventura", en:"The Call to Adventure",
     desc:"Algo acontece que tira o herói do seu mundo cotidiano. Pode ser um evento, um encontro ou uma descoberta.",
-    film:"Os pais exploram um túnel misterioso. Do outro lado, encontram uma cidade abandonada. Eles começam a comer a comida dos espíritos e se transformam em porcos. Chihiro está sozinha em um mundo sobrenatural.",
-    q:"Qual evento marca o 'chamado à aventura' de Chihiro? Como ela reage inicialmente?",
-    tip:"Procure o momento em que tudo muda. Há um ponto de não-retorno no filme." },
+    film:"Desobedecendo a mãe, Kubo fica no cemitério após o anoitecer tentando se comunicar com o espírito do pai. As Irmãs — agentes do avô —  o localizam e atacam. A mãe usa seus últimos poderes para salvá-lo, lançando-o para longe. Kubo acorda sozinho no mundo dos espíritos.",
+    q:"O que desencadeia a aventura de Kubo? Ele escolhe partir ou é forçado? O que isso muda na história?",
+    tip:"Compare com outros heróis: alguns escolhem a aventura, outros são empurrados. Qual é o caso de Kubo?" },
   { id:2, emoji:"😨", color:"#E76F51", name:"Recusa do Chamado", en:"Refusal of the Call",
     desc:"O herói hesita, tem medo ou tenta fugir do destino que o aguarda.",
-    film:"Chihiro entra em pânico. Tenta fugir, atravessar o rio e voltar para o mundo real. Ela chora, paralisa de medo e repete 'isto é um sonho'. Está completamente aterrorizada e não quer aceitar o que acontece.",
-    q:"Como Chihiro demonstra sua recusa em aceitar a aventura? Você se identificaria com ela nesse momento?",
-    tip:"É normal ter medo do desconhecido. O herói também tem medo!" },
-  { id:3, emoji:"👴", color:"#457B9D", name:"O Mentor", en:"Meeting the Mentor",
+    film:"Kubo não quer partir sozinho; ele queria apenas encontrar o espírito do pai e voltar para casa. Ele fica perdido, sem saber o que fazer, e precisa ser orientado pelo espírito do Macaco (enviado pela mãe). Sua hesitação é clara: ele é uma criança que perdeu tudo de uma vez.",
+    q:"Como a hesitação de Kubo aparece no início da jornada? Você acha que ele tinha escolha?",
+    tip:"A recusa nem sempre é uma negativa em voz alta — pode ser medo, choro, paralisia. Observe Kubo." },
+  { id:3, emoji:"🐒", color:"#457B9D", name:"O Mentor", en:"Meeting the Mentor",
     desc:"O herói encontra um guia que oferece conselho, magia ou equipamento para a jornada.",
-    film:"Haku aparece e guia Chihiro, ensinando-a a sobreviver no mundo dos espíritos. Ele a aconselha a pedir emprego a Yubaba e a não esquecer seu nome. Lin também a ajuda dentro da casa de banho.",
-    q:"Quem são os mentores de Chihiro? O que cada um lhe ensina ou oferece?",
-    tip:"Um mentor não precisa ser uma só pessoa. Observe quem ajuda Chihiro ao longo da história." },
+    film:"O Macaco, espírito enviado pela mãe de Kubo, surge para protegê-lo e guiá-lo. Logo depois, o Besouro aparece: um samurai sem memória que se revela ser o pai de Kubo encantado. Juntos, os dois mentores oferecem proteção, sabedoria e amor — sem que Kubo saiba, de início, quem eles realmente são.",
+    q:"Quem são os mentores de Kubo? O que cada um representa para ele? Por que é importante que ele não saiba, de início, suas identidades?",
+    tip:"Pense no que cada mentor ensina: o Macaco ensina disciplina; o Besouro ensina leveza e coragem." },
   { id:4, emoji:"🚪", color:"#6A4C93", name:"Cruzando o Limiar", en:"Crossing the Threshold",
     desc:"O herói decide aceitar o chamado e entra definitivamente no Mundo Especial, sem volta.",
-    film:"Chihiro decide entrar na casa de banho e pedir emprego a Yubaba. Ela assina o contrato e tem seu nome roubado — passa a ser 'Sen'. Este é o ponto de não-retorno: ela agora faz parte do mundo dos espíritos.",
-    q:"Qual ação de Chihiro representa a decisão de enfrentar a aventura? O que ela sacrifica ao fazer isso?",
-    tip:"Lembre-se do nome! O que significa perder o próprio nome?" },
+    film:"Kubo parte com o Macaco e o Besouro em busca das três peças da armadura lendária de seu pai: a espada inabalável, o peitoral invulnerável e o elmo invisível. Ao aceitar essa missão, ele entra de vez no mundo dos perigos e da magia, sem caminho de volta.",
+    q:"Qual momento marca a decisão definitiva de Kubo de embarcar na aventura? O que ele está disposto a arriscar?",
+    tip:"O limiar é o ponto sem retorno. Após cruzá-lo, o herói não pode simplesmente voltar para casa." },
   { id:5, emoji:"⚔️", color:"#2D6A4F", name:"Provas, Aliados e Inimigos", en:"Tests, Allies & Enemies",
     desc:"No Mundo Especial, o herói enfrenta desafios, faz amizades e descobre quem são seus adversários.",
-    film:"Sen trabalha duramente na casa de banho. Ela limpa o espírito-rio poluído, enfrenta o monstro Sem-Rosto (Kaonashi), faz amizade com Lin, descobre que Haku está ferido e decide ajudá-lo mesmo arriscando tudo.",
-    q:"Liste pelo menos 3 desafios que Chihiro enfrenta e 3 aliados que ela faz. O que cada prova revela sobre ela?",
-    tip:"Os aliados e inimigos revelam os valores do herói. Quem Chihiro escolhe ajudar e por quê?" },
-  { id:6, emoji:"🐉", color:"#D62828", name:"A Provação Suprema", en:"The Ordeal",
+    film:"O trio enfrenta o Jardim de Pedra e suas criaturas de olhos, recupera a espada. Kubo aprende a lutar, a confiar em seus companheiros e descobre que as Irmãs são suas tias — parentes que querem arrancá-lhe o olho restante para levá-lo ao avô.",
+    q:"Liste pelo menos 3 desafios que Kubo enfrenta e descreva como ele e seus aliados respondem a cada um.",
+    tip:"Observe como Kubo muda a cada prova — ele começa dependente e vai ganhando confiança progressivamente." },
+  { id:6, emoji:"🌊", color:"#118AB2", name:"Aproximação da Caverna", en:"Approach to the Inmost Cave",
+    desc:"O herói se aproxima do local do maior perigo. O grupo se prepara para o confronto mais difícil.",
+    film:"Para recuperar o peitoral no fundo do oceano, o trio desce às profundezas. Lá, Kubo começa a desconfiar de quem são realmente o Macaco e o Besouro. A tensão cresce: ele sente que há segredos sendo escondidos dele.",
+    q:"Como Kubo se prepara para o desafio mais difícil? O que o perturba emocionalmente nessa fase?",
+    tip:"A 'caverna' pode ser interior — um medo, uma verdade dolorosa. O que Kubo teme descobrir?" },
+  { id:7, emoji:"💔", color:"#D62828", name:"A Provação Suprema", en:"The Ordeal",
     desc:"O momento mais crítico da jornada. O herói enfrenta sua maior crise e parece que vai fracassar.",
-    film:"Chihiro precisa viajar de trem para encontrar Zeniba e recuperar o selo mágico roubado. Ela faz isso sozinha, sem garantias, levando Sem-Rosto com ela — é quando ela vai mais longe do que jamais imaginou.",
-    q:"O que representa a viagem de trem para Chihiro? Por que este é o ponto de maior risco?",
-    tip:"Pense na distância — física e emocional — que Chihiro percorre nessa cena." },
-  { id:7, emoji:"✨", color:"#FFB703", name:"A Recompensa", en:"The Reward",
+    film:"As Irmãs atacam e destroem o Macaco e o Besouro diante de Kubo. Ele descobre que o Macaco era o espírito de sua mãe e o Besouro era seu pai encantado — e os perdeu para sempre. Sozinho, arrasado, ele precisa continuar.",
+    q:"Por que a perda do Macaco e do Besouro é a crise mais profunda da jornada de Kubo? O que muda dentro dele depois disso?",
+    tip:"Este é o momento em que o herói toca o fundo. O que resta quando se perde tudo que se ama?" },
+  { id:8, emoji:"✨", color:"#FFB703", name:"A Recompensa", en:"The Reward",
     desc:"Após a crise, o herói conquista algo — pode ser um objeto, conhecimento ou transformação interior.",
-    film:"Chihiro recebe de Zeniba um hairband de proteção. Mais importante: ela recupera a memória de Haku — lembra o nome verdadeiro dele (Nigihayami Kohaku Nushi), salvando-o. A recompensa real é seu crescimento.",
-    q:"Qual é a verdadeira recompensa de Chihiro — o objeto que recebe ou algo mais profundo? Explique.",
-    tip:"As melhores recompensas são invisíveis. O que mudou DENTRO de Chihiro?" },
-  { id:8, emoji:"🌉", color:"#118AB2", name:"O Caminho de Volta", en:"The Road Back",
+    film:"Da dor e da raiva, Kubo extrai uma força que nunca soube que tinha. Ele completa a armadura e compreende, de verdade, o legado dos pais: não objetos mágicos, mas o amor e as histórias que ficam. A recompensa real é a consciência de quem ele é.",
+    q:"O que Kubo 'ganha' após a provação suprema? É apenas a armadura ou algo mais profundo?",
+    tip:"As melhores recompensas são as que não podem ser roubadas. O que ninguém pode tirar de Kubo?" },
+  { id:9, emoji:"🌙", color:"#8338EC", name:"O Caminho de Volta", en:"The Road Back",
     desc:"O herói decide retornar ao Mundo Comum, mas ainda há obstáculos a vencer.",
-    film:"Para libertar seus pais, Chihiro precisa passar num teste final: identificar quais porcos são seus pais entre uma multidão. Ela responde com segurança: 'Nenhum deles é meu pai ou minha mãe.'",
-    q:"Como Chihiro consegue passar no teste final de Yubaba? O que essa resposta revela sobre quem ela se tornou?",
-    tip:"Compare a Chihiro do início com a que responde ao teste. Que diferença você vê?" },
-  { id:9, emoji:"🏆", color:"#8338EC", name:"O Retorno com o Elixir", en:"Return with the Elixir",
+    film:"Kubo retorna para enfrentar o Rei da Lua — seu próprio avô — usando a armadura, a shamisen e tudo que aprendeu. O retorno não é uma fuga: é uma escolha consciente de ir ao encontro do confronto final.",
+    q:"O que motiva Kubo a retornar e enfrentar o avô? Ele poderia fugir? Por que escolhe não fugir?",
+    tip:"O herói que retorna não é o mesmo que partiu. O que dá a Kubo coragem para esse último passo?" },
+  { id:10, emoji:"🌟", color:"#06b6d4", name:"Ressurreição", en:"Resurrection",
+    desc:"A prova final. O herói enfrenta a morte (física ou simbólica) e emerge transformado, provando sua mudança.",
+    film:"O confronto com o Rei da Lua é épico — o avô usa todo o seu poder destruidor. Mas Kubo não vence pela força: ele usa as memórias coletivas dos aldeões para transformar o avô num humano bondoso, privado de sua crueldade. A vitória é pela memória e pelo amor, não pela violência.",
+    q:"Como Kubo vence o confronto final? O que essa forma de vitória diz sobre o tema central do filme?",
+    tip:"Compare: em outros filmes, o herói mata o vilão. Aqui, o que acontece? O que Miyazaki e Travis Knight querem dizer com isso?" },
+  { id:11, emoji:"🏆", color:"#7EC8A4", name:"O Retorno com o Elixir", en:"Return with the Elixir",
     desc:"O herói volta transformado. Traz consigo algo valioso que beneficia a si mesmo e ao mundo ao redor.",
-    film:"Chihiro retorna ao mundo humano com os pais livres. Ela anda com segurança e sem medo — visivelmente mudada. O 'elixir' é sua transformação: de menina dependente e medrosa a uma jovem corajosa, empática e resiliente.",
-    q:"Como Chihiro voltou diferente? O que ela 'trouxe' da aventura que a mudou para sempre?",
-    tip:"O elixir pode ser uma lição, uma força interior, uma nova visão de mundo. O que Chihiro aprendeu?" },
+    film:"A vila se reúne ao redor de lanternas acesas em homenagem aos mortos. Kubo acende as lanternas pelos pais e conta suas histórias para todos. O 'elixir' que ele traz de volta é a memória viva — a certeza de que aqueles que amamos continuam conosco enquanto suas histórias são contadas.",
+    q:"O que Kubo 'traz de volta' para o mundo? Como o ato de contar histórias conecta passado e presente no filme?",
+    tip:"Pense na primeira cena e na última. O que Kubo fazia antes e o que faz agora? O que mudou no significado disso?" },
 ];
 
 // ======== STATE ========
 let studentName = "";
 let currentStage = 0;
-let entries = {};   // { stageId: answerText }
+let entries = {};
 let savingStage = -1;
 
 // ======== UTILS ========
@@ -578,7 +588,6 @@ function buildMap() {
 
 function buildOrbit() {
   const container = document.getElementById("orbit-container");
-  // Remove old nodes
   container.querySelectorAll(".orbit-node").forEach(n => n.remove());
   const size = container.offsetWidth || 480;
   const r = size * 0.43;
@@ -658,7 +667,6 @@ function openStage(idx) {
 
   document.getElementById("stage-counter").textContent = `Etapa ${idx+1} de ${STAGES.length}`;
 
-  // concept card
   const orb = document.getElementById("concept-orb");
   orb.textContent = st.emoji;
   orb.style.background = `radial-gradient(circle at 35% 35%, white, ${st.color})`;
@@ -677,7 +685,7 @@ function openStage(idx) {
   fb.style.background = `${st.color}12`;
   fb.style.border = `1px solid ${st.color}30`;
   document.getElementById("film-text").innerHTML =
-    `<strong>🎬 Em A Viagem de Chihiro: </strong>${st.film}`;
+    `<strong>🎬 Em Kubo e as Duas Cordas Mágicas: </strong>${st.film}`;
 
   document.getElementById("answer-question").textContent = st.q;
   document.getElementById("answer-tip").textContent = "💡 " + st.tip;
@@ -714,10 +722,8 @@ async function saveAnswer() {
   btn.disabled = true;
   status.textContent = "";
 
-  // Save locally first
   entries[currentStage] = text;
 
-  // Try sending to Google Sheets
   let sheetOk = false;
   if (SHEETS_URL !== "COLE_AQUI_A_URL_DO_SEU_APPS_SCRIPT") {
     try {
@@ -796,7 +802,6 @@ function openJournal() {
     list.appendChild(div);
   });
 
-  // Edit buttons
   list.querySelectorAll(".btn-edit").forEach(btn => {
     btn.addEventListener("click", () => {
       openStage(parseInt(btn.dataset.idx));
